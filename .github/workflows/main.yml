@@ -2,11 +2,14 @@ name: main
 
 on:
   workflow_dispatch:
-  push:
 
 jobs:
   ncdu:
-    runs-on: windows-2025
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2022, windows-2025, windows-11-arm]
 
     steps:
     - name: Setup MSYS2
@@ -14,17 +17,18 @@ jobs:
       with:
         install: ncdu
         release: false
+        msystem: MSYS
 
     - name: Run ncdu
       shell: msys2 {0}
       run: |
-        ncdu -0 -o windows-2025-C.json /C
-        ncdu -0 -o windows-2025-D.json /D
+        ncdu -0 -o ${{ matrix.os }}-C.json /C
+        ncdu -0 -o ${{ matrix.os }}-D.json /D
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: windows-2025
+        name: ${{ matrix.os }}
         path: |
-          windows-2025-C.json
-          windows-2025-D.json
+          ${{ matrix.os }}-C.json
+          ${{ matrix.os }}-D.json
