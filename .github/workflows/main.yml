@@ -16,7 +16,7 @@ jobs:
       uses: msys2/setup-msys2@v2
       with:
         install: ncdu
-        release: false
+        release: ${{ matrix.os == 'windows-11-arm' }}
         msystem: MSYS
 
     - name: Run ncdu
