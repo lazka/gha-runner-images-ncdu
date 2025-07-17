@@ -1,0 +1,27 @@
+name: main
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  ncdu:
+    runs-on: windows-2025
+
+    steps:
+    - name: Setup MSYS2
+      uses: msys2/setup-msys2@v2
+      with:
+        install: ncdu
+        release: false
+
+    - name: Run ncdu
+      shell: msys2 {0}
+      run: |
+        ncdu -0 -o windows-2025.json /
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-2025
+        path: windows-2025.json
